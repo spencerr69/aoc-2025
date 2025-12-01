@@ -1,7 +1,6 @@
 use std::fs;
 use std::path;
 
-
 pub fn run() {
     println!("Day 1");
 
@@ -9,37 +8,38 @@ pub fn run() {
 
     let mut dial = Dial::new();
 
-    input.lines().map(Instruction::from).for_each(dial.update_current_pos());
+    input
+        .lines()
+        .map(Instruction::from)
+        .for_each(dial.update_current_pos());
 
     println!("Password: {}", dial.password)
-
 }
 
 pub fn get_input() -> String {
     let path = path::Path::new("src/inputs/1.txt");
 
-   let input = fs::read_to_string(path).expect("Couldn't find file 1.txt");
+    let input = fs::read_to_string(path).expect("Couldn't find file 1.txt");
     input
 }
 
 enum Direction {
     LEFT,
-    RIGHT
+    RIGHT,
 }
 
 impl From<&str> for Direction {
     fn from(value: &str) -> Self {
-        if value == "L" {
-            Direction::LEFT
-        } else {
-            Direction::RIGHT
+        match value {
+            "L" => Direction::LEFT,
+            _ => Direction::RIGHT,
         }
     }
 }
 
 struct Instruction {
     direction: Direction,
-    amount: i32
+    amount: i32,
 }
 
 impl From<&str> for Instruction {
@@ -49,23 +49,20 @@ impl From<&str> for Instruction {
         let direction = Direction::from(dir);
         let amount = amount.parse::<i32>().unwrap();
 
-        Instruction {
-            direction,
-            amount
-        }
+        Instruction { direction, amount }
     }
 }
 
 struct Dial {
     current_pos: i32,
-    pub password: i32
+    pub password: i32,
 }
 
 impl Dial {
     pub fn new() -> Self {
         Self {
             current_pos: 50,
-            password: 0
+            password: 0,
         }
     }
 
@@ -92,8 +89,5 @@ impl Dial {
                 }
             }
         }
-        // if self.current_pos == 0 {
-        //     self.password += 1
-        // }
     }
 }
