@@ -2,8 +2,6 @@ use std::fs;
 use std::path;
 
 pub fn run() {
-    println!("Day 1");
-
     let input = get_input();
 
     let mut dial = Dial::new();
@@ -12,8 +10,6 @@ pub fn run() {
         .lines()
         .map(Instruction::from)
         .for_each(dial.update_current_pos());
-
-    println!("Password: {}", dial.password)
 }
 
 pub fn get_input() -> String {
