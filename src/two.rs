@@ -42,21 +42,44 @@ pub fn count_flops(ranges: Vec<RangeInclusive<i128>>) -> i128 {
     let flops = ranges.iter().fold(0 as i128, |mut acc, range| {
         acc = range.clone().fold(acc, |acc, password| {
             let password = password.to_string();
-            if !password.len().is_multiple_of(2) {
-                return acc;
+
+            let mut factors = list_factors(password.len() as i128);
+
+            factors.pop();
+
+            let mut pattern = &password[0..factors.pop().unwrap_or(0) as usize];
+
+            while !factors.is_empty() {
+                if password.replace(pattern, "").len() == 0 {
+                    return acc + password.parse::<i128>().unwrap_or(0);
+                } else {
+                    if let Some(next_factor) = factors.pop() {
+                        pattern = &pattern[0..next_factor as usize];
+                    } else {
+                        return acc;
+                    }
+                }
             }
 
-            let halfway = password.len() / 2;
-
-            let (left_word, right_word) = (&password[0..halfway], &password[halfway..]);
-
-            if !left_word.contains(right_word) {
-                return acc;
-            }
-
-            acc + password.parse::<i128>().unwrap_or(0)
+            acc
         });
         acc
     });
     flops
+}
+
+fn list_factors(number: i128) -> Vec<i128> {
+    let mut factors: Vec<i128> = Vec::new();
+    let mut i: i128 = 1;
+    while i * i <= number {
+        if number % i == 0 {
+            factors.push(i);
+            if i * i != number {
+                factors.push(number / i);
+            }
+        }
+        i += 1;
+    }
+    factors.sort();
+    return factors;
 }
